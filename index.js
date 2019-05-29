@@ -38,11 +38,8 @@ const connection = new WebSocket(url)
             console.log('There was an error', err)
             return
         }
-        if(value === 0){
-            sendDeviceNews('off');
-        }
         if(value === 1){
-            sendDeviceNews('on')
+            sendDeviceNews('off')
         }
         
     })
