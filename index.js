@@ -1,7 +1,7 @@
 var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
-var LED1 = new Gpio(4, 'out'); //use GPIO pin 4, and specify that it is output
-// var LED17 = new Gpio(17, 'out');
-var pushButton = new Gpio(17, 'in', 'both');
+var PIN1 = new Gpio(4, 'out'); //use GPIO pin 4, and specify that it is output
+var PIN2 = new Gpio(27, 'out'); //use GPIO pin 27, and specify that it is output
+var alarmTrigger = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input 
 const WebSocket = require('ws')
 const url = 'http://agile-reef-99245.herokuapp.com/cable'
 const connection = new WebSocket(url)
@@ -33,7 +33,7 @@ const connection = new WebSocket(url)
     
     }
 
-    pushButton.watch(function (err, value){
+    alarmTrigger.watch(function (err, value){
         if(err){
             console.log('There was an error', err)
             return
@@ -45,29 +45,30 @@ const connection = new WebSocket(url)
     })
 
     function unexportOnClose(){
-        LED1.writeSync(0);
-        LED1.unexport();
-        pushButton.unexport();
+        PIN1.writeSync(0);
+        PIN1.unexport();
+        PIN2.writeSync(0);
+        PIN2.unexport();
+        alarmTrigger.unexport();
     }
 
     process.on('SIGINT', unexportOnClose);
 
     function controlDevices(device){
-        console.log('Device: ',device)
-        if(device.id === 1){
+        if(device.id === 8){
             if(device.commands[0]==='on'){
-                LED1.writeSync(1)
+                PIN1.writeSync(1)
             } else {
-                LED1.writeSync(0)
+                PIN1.writeSync(0)
             }
             } 
-        //     if(device.id === 2){
-        //     if(device.commands[0]==='on'){
-        //         LED17.writeSync(1)
-        //     } else {
-        //         LED17.writeSync(0)
-        //     }
-        // }
+            if(device.id === 9){
+            if(device.commands[0]==='on'){
+                PIN2.writeSync(1)
+            } else {
+                PIN2.writeSync(0)
+            }
+        }
     
     }
 
