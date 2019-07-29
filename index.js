@@ -57,21 +57,20 @@ var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
     process.on('SIGINT', unexportOnClose);
 
     function controlDevices(device){
-        if(device.id === onOffDeviceId){
-            if(device.commands[0]==='on'){
-                PIN1.writeSync(1)
-            } else {
-                PIN1.writeSync(0)
-            }
-            }
-            if(device.id === multiDeviceId){
-            if(device.commands[0]==='on'){
-                PIN2.writeSync(1)
-            } else {
-                PIN2.writeSync(0)
-            }
+      if(device.id === onOffDeviceId){
+        if(device.commands[0]==='on'){
+            PIN1.writeSync(1)
+        } else {
+            PIN1.writeSync(0)
         }
-
+      }
+      if(device.id === multiDeviceId){
+        if(device.commands[0]==='on'){
+            PIN2.writeSync(1)
+        } else {
+            PIN2.writeSync(0)
+        }
+      }
     }
 
     function sendDeviceNews(state){
@@ -85,6 +84,5 @@ var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
                 commands: [state]
             })
         }
-        console.log(sendData)
         connection.send(JSON.stringify(sendData))
     }
