@@ -1,16 +1,20 @@
+// Initialize libraries
 var Gpio = require('onoff').Gpio; //include onoff to interact with the GPIO
 const WebSocket = require('ws')
 const url = 'http://agile-reef-99245.herokuapp.com/cable'
 const connection = new WebSocket(url)
 
+// Initialize user device ID's
 const onOffDeviceId = null  // Replace "null" with the device ID from Home Control, connect to pin 4 on your RaspberryPi
 const alarmDeviceId = null // Replace "null" with the device ID from Home Control, connect to pin 17 on your RaspberryPi
 const multiDeviceId = null  // Replace "null" with the device ID from Home Control, connect to pin 27 on your RaspberryPi
 
+// Define and map local devices to pins on the RaspberryPi
 var PIN1 = new Gpio(4, 'out'); //use GPIO pin 4, and specify that it is output
 var PIN2 = new Gpio(27, 'out'); //use GPIO pin 27, and specify that it is output
 var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
 
+// Logic for websocket communication
     const msg = {
     command: 'subscribe',
     identifier: JSON.stringify({
@@ -34,7 +38,7 @@ var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
         }
 
     }
-
+// Have the RaspberryPi listen for a change on the alarmTrigger
     alarmTrigger.watch(function (err, value){
         if(err){
             console.log('There was an error', err)
@@ -45,7 +49,7 @@ var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
         }
 
     })
-
+// Free up the RaspberryPi pins when the program closes
     function unexportOnClose(){
         PIN1.writeSync(0);
         PIN1.unexport();
@@ -56,6 +60,7 @@ var pushButton = new Gpio(17, 'in', 'both'); //define GPIO pin 17 as an input
 
     process.on('SIGINT', unexportOnClose);
 
+// Logic for device state change
     function controlDevices(device){
       if(device.id === onOffDeviceId){
         if(device.commands[0]==='on'){
